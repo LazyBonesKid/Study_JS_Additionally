@@ -1,52 +1,51 @@
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
 
-const filterByType = (type, ...values) => values.filter(value => typeof value === type),
+    const select = document.getElementById('cars'),
+        output = document.getElementById('output');
 
+    const request = () => {
 
-	hideAllResponseBlocks = () => {
-		const responseBlocksArray = Array.from(document.querySelectorAll('div.dialog__response-block')); 
-		responseBlocksArray.forEach(block => block.style.display = 'none'); 
-	},
+        return new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.open('GET', './cars.json');
+            request.setRequestHeader('Content-type', 'application/json');
+            request.send();
+            request.addEventListener('readystatechange', () => {
+                if (request.readyState !== 4) {
+                    return;
+                } 
+                if (request.status === 200) {
+                    resolve(request.responseText)
+                } else {
+                    reject()
+                }
+            });
+        });
 
-	showResponseBlock = (blockSelector, msgText, spanSelector) => { 
-		hideAllResponseBlocks(); 
-		document.querySelector(blockSelector).style.display = 'block'; 
-		if (spanSelector) { 
-			document.querySelector(spanSelector).textContent = msgText; 
-		}
-	},
+    };
 
-	showError = msgText => showResponseBlock('.dialog__response-block_error', msgText, '#error'), 
+    const resolve = (responseText) => {
+        const data = JSON.parse(responseText);
 
-	showResults = msgText => showResponseBlock('.dialog__response-block_ok', msgText, '#ok'), 
+        data.cars.forEach(item => {
+            if (item.brand === select.value) {
+                const {brand, model, price} = item;
+                output.innerHTML = `Тачка ${brand} ${model} <br>
+                Цена: ${price}$`;
+                }
+        });
 
-	showNoResults = () => showResponseBlock('.dialog__response-block_no-results'), 
+    };
+    
+    const reject = () => {
+        output.innerHTML = 'Произошла ошибка'
+    };
 
-	tryFilterByType = (type, values) => {
-		const f = new Function(`return filterByType('${type}', ${values})`);
-		try {
-			const valuesArray = f().join(', '); 
-			const alertMsg = (valuesArray.length) ?     
-				`Данные с типом ${type}: ${valuesArray}` : 
-				`Отсутствуют данные типа ${type}`; 
-			showResults(alertMsg);
-		} catch (e) {	
-			showError(`Ошибка: ${e}`); 
-		}
-	};
+    select.addEventListener('change', () => {
+        request()
+            .then(resolve)
+            .catch(reject);
+    });
 
-const filterButton = document.querySelector('#filter-btn'); 
-
-filterButton.addEventListener('click', e => {
-	const typeInput = document.querySelector('#type'); 
-	const dataInput = document.querySelector('#data'); 
-
-	if (dataInput.value === '') {
-		dataInput.setCustomValidity('Поле не должно быть пустым!'); 
-		showNoResults();
-	} else {
-		dataInput.setCustomValidity(''); 
-		e.preventDefault(); 
-		tryFilterByType(typeInput.value.trim(), dataInput.value.trim()); 
-	}
 });
-
