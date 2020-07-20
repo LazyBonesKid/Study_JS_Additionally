@@ -2,29 +2,21 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" type="text/css" href="/style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <style>
-
-    </style>
 </head>
 
 <body>
+    <div>
+        <span style="margin: 41%;">Введите текст, который хотите перевести ниже</span>
+        <div id="text" class="text" contenteditable="true"></div>
+        <span style="margin: 47%;">Перевод текста</span>
+        <div id="translator" class="text" contenteditable="true"></div>
+    </div>
 
-<select id="cars">
-    <option value="no">Выберите тачку</option>
-    <option value="bmw">bmw</option>
-    <option value="volvo">volvo</option>
-</select>
-
-<div id="output">
-    выбери тачку
-</div>
-
-
-<script src="js\script.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>
