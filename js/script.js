@@ -27,15 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const resolve = (responseText) => {
         const data = JSON.parse(responseText);
+        let log = false;
 
         data.cars.forEach(item => {
             if (item.brand === select.value) {
+                log = true;
                 const {brand, model, price} = item;
                 output.innerHTML = `Тачка ${brand} ${model} <br>
                 Цена: ${price}$`;
                 }
         });
 
+        if (log === false) {
+            output.innerHTML = 'выбери тачку';
+        }
     };
     
     const reject = () => {
